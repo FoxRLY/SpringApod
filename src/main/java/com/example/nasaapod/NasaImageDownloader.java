@@ -1,6 +1,6 @@
 package com.example.nasaapod;
 
-import org.apache.coyote.BadRequestException;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -11,19 +11,18 @@ import reactor.core.publisher.Mono;
 import java.time.LocalDate;
 
 @Service
+@RequiredArgsConstructor
 public class NasaImageDownloader {
-
-    @Autowired
-    NasaImageDownloader(WebClient client) {
-        this.client = client;
-    }
-
-    @Value("${apikey}")
     private String apiKey;
-
-    @Value("${apiurl}")
     private String apiUrl;
     private final WebClient client;
+
+    @Autowired
+    public NasaImageDownloader(@Value("${apikey}")String apiKey, @Value("${apiurl}")String apiUrl, WebClient client){
+        this.client = client;
+        this.apiKey = apiKey;
+        this.apiUrl = apiUrl;
+    }
 
     public Mono<ApodData> downloadImageByDate(LocalDate date) {
         String stringDate = date.toString();

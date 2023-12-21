@@ -12,6 +12,7 @@ import java.time.LocalDate;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.fail;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -28,23 +29,18 @@ class ApodServiceTest {
 
     LocalDate date = LocalDate.parse("2022-09-20");
 
-    LocalDate govnoDate = LocalDate.parse("1000-03-20");
+    LocalDate badDate = LocalDate.parse("1000-03-20");
 
     ApodData data = new ApodData(date, "bruuuuhhhhh", "werudwfkj", "bruhich", "erlkjt.mds");
-
-
-//    @BeforeEach
-//    void init(){
-//
-////        Mockito.when(imageDownloader.downloadImageByDate(date)).thenReturn(Mono.just(data));
-//        Mockito.when(apodRepository.findByDate(date)).thenReturn(Optional.of(data));
-//    }
 
     @Test
     @DisplayName("Получение картинки из базы")
     void getApodByDateFromDB() {
         when(apodRepository.findByDate(date)).thenReturn(Optional.of(data));
-        assertEquals(data, apodService.getApodByDate(date).get());
+        apodService.getApodByDate(date).ifPresentOrElse(
+                apodData -> assertEquals(apodData, data),
+                () -> fail("ApodData is empty")
+        );
         verify(apodRepository, times(1))
                 .findByDate(eq(date));
         verify(imageDownloader, times(0))
@@ -57,7 +53,10 @@ class ApodServiceTest {
     void getApodByDateFromNasa() {
         when(apodRepository.findByDate(date)).thenReturn(Optional.empty());
         when(imageDownloader.downloadImageByDate(date)).thenReturn(Mono.just(data));
-        assertEquals(data, apodService.getApodByDate(date).get());
+        apodService.getApodByDate(date).ifPresentOrElse(
+                apodData -> assertEquals(apodData, data),
+                () -> fail("ApodData is empty")
+        );
         verify(apodRepository, times(1))
                 .findByDate(eq(date));
         verify(imageDownloader, times(1))
@@ -65,14 +64,14 @@ class ApodServiceTest {
     }
 
     @Test
-    @DisplayName("Ничего не возвращаем, если дата говно")
+    @DisplayName("Ничего не возвращаем, если дата не существует в базе NASA")
     void getApodByDateReturnsEmptyWhenDateIsBad(){
-        when(apodRepository.findByDate(govnoDate)).thenReturn(Optional.empty());
-        when(imageDownloader.downloadImageByDate(govnoDate)).thenReturn(Mono.empty());
-        assertEquals(Optional.empty(), apodService.getApodByDate(govnoDate));
+        when(apodRepository.findByDate(badDate)).thenReturn(Optional.empty());
+        when(imageDownloader.downloadImageByDate(badDate)).thenReturn(Mono.empty());
+        assertEquals(Optional.empty(), apodService.getApodByDate(badDate));
         verify(apodRepository, times(1))
-                .findByDate(eq(govnoDate));
+                .findByDate(eq(badDate));
         verify(imageDownloader, times(1))
-                .downloadImageByDate(eq(govnoDate));
+                .downloadImageByDate(eq(badDate));
     }
 }

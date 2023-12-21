@@ -38,6 +38,8 @@
 			<scope>test</scope>
 		</dependency>
 
+
+
 		<!-- https://mvnrepository.com/artifact/org.testcontainers/postgresql -->
 		<dependency>
 			<groupId>org.testcontainers</groupId>
@@ -53,6 +55,18 @@
 			<scope>test</scope>
 		</dependency>
 
+		<dependency>
+			<groupId>com.squareup.okhttp3</groupId>
+			<artifactId>mockwebserver</artifactId>
+			<version>4.10.0</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>com.squareup.okhttp3</groupId>
+			<artifactId>okhttp</artifactId>
+			<version>4.10.0</version>
+			<scope>test</scope>
+		</dependency>
 
 		<dependency>
 			<groupId>org.postgresql</groupId>

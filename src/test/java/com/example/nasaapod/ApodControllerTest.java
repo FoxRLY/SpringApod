@@ -2,10 +2,7 @@ package com.example.nasaapod;
 
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.server.LocalServerPort;
@@ -45,14 +42,17 @@ class ApodControllerTest {
     @Autowired
     ApodRepository apodRepository;
 
+    @Autowired
+    NasaImageDownloader imageDownloader;
+
     @BeforeEach
     void setUp() {
-
         RestAssured.baseURI = "http://localhost:" + port + "/";
         apodRepository.deleteAll();
     }
 
     @Test
+    @DisplayName("Проврека получения картинки из базы")
     void findByDate() {
         ApodData data = new ApodData(LocalDate.parse("2020-12-12"), "bruuuuhhhhh", "werudwfkj", "bruhich", "erlkjt.mds");
         apodRepository.save(data);
@@ -62,6 +62,42 @@ class ApodControllerTest {
                 .get("/apod?date=2020-12-12")
                 .then()
                 .statusCode(200)
-                .body("date", equalTo(data.getDate().toString()));
+                .body("date", equalTo(data.getDate().toString()))
+                .body("explanation", equalTo(data.getExplanation()))
+                .body("hdurl", equalTo(data.getHdurl()))
+                .body("title", equalTo(data.getTitle()))
+                .body("url", equalTo(data.getUrl()));
+    }
+
+    @Test
+    @DisplayName("Проверка получения картинки из NASA")
+    void findByDateFromNasa() {
+        RestAssured.given()
+                .contentType(ContentType.JSON)
+                .when()
+                .get("/apod?date=2020-12-12")
+                .then()
+                .statusCode(200)
+                .body("date", equalTo("2020-12-12"));
+    }
+
+    @Test
+    @DisplayName("Проверка на ошибку при несуществующей дате")
+    void findByBadDate() {
+        RestAssured.given()
+                .when()
+                .get("/apod?date=1000-09-09")
+                .then()
+                .statusCode(400);
+    }
+
+    @Test
+    @DisplayName("Проверка на ошибку при неверно отформатированной дате")
+    void findByBadFromattedDate() {
+        RestAssured.given()
+                .when()
+                .get("/apod?date=232390-233834-sdf")
+                .then()
+                .statusCode(400);
     }
 }
