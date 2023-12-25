@@ -1,5 +1,8 @@
-package com.example.nasaapod;
+package com.example.nasaapod.integration;
 
+import com.example.nasaapod.dto.ApodData;
+import com.example.nasaapod.repositories.ApodRepository;
+import com.example.nasaapod.services.NasaImageDownloader;
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
 import org.junit.jupiter.api.*;
@@ -54,7 +57,7 @@ class ApodControllerTest {
     @Test
     @DisplayName("Проврека получения картинки из базы")
     void findByDate() {
-        ApodData data = new ApodData(LocalDate.parse("2020-12-12"), "bruuuuhhhhh", "werudwfkj", "bruhich", "erlkjt.mds");
+        ApodData data = new ApodData(0L, LocalDate.parse("2020-12-12"), "bruuuuhhhhh", "werudwfkj", "bruhich", "erlkjt.mds");
         apodRepository.save(data);
         RestAssured.given()
                 .contentType(ContentType.JSON)

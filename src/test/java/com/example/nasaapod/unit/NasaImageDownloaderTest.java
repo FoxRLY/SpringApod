@@ -1,5 +1,8 @@
-package com.example.nasaapod;
+package com.example.nasaapod.unit;
 
+import com.example.nasaapod.dto.ApodData;
+import com.example.nasaapod.dto.ApodResponse;
+import com.example.nasaapod.services.NasaImageDownloader;
 import okhttp3.mockwebserver.MockResponse;
 import okhttp3.mockwebserver.MockWebServer;
 import org.junit.jupiter.api.*;
@@ -37,8 +40,8 @@ class NasaImageDownloaderTest {
     @BeforeEach
     void init(){
         String host = String.format("http://localhost:%s", mockServer.getPort());
-        WebClient client = WebClient.create();
-        imageDownloader = new NasaImageDownloader("dslfk", host, client);
+        WebClient client = WebClient.create(host);
+        imageDownloader = new NasaImageDownloader(client);
     }
 
     @Test

@@ -1,5 +1,9 @@
-package com.example.nasaapod;
+package com.example.nasaapod.unit;
 
+import com.example.nasaapod.dto.ApodData;
+import com.example.nasaapod.repositories.ApodRepository;
+import com.example.nasaapod.services.ApodService;
+import com.example.nasaapod.services.NasaImageDownloader;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -31,7 +35,7 @@ class ApodServiceTest {
 
     LocalDate badDate = LocalDate.parse("1000-03-20");
 
-    ApodData data = new ApodData(date, "bruuuuhhhhh", "werudwfkj", "bruhich", "erlkjt.mds");
+    ApodData data = new ApodData(0L, date, "bruuuuhhhhh", "werudwfkj", "bruhich", "erlkjt.mds");
 
     @Test
     @DisplayName("Получение картинки из базы")

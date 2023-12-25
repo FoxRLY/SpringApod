@@ -1,4 +1,4 @@
-package com.example.nasaapod;
+package com.example.nasaapod.dto;
 
 import lombok.Data;
 

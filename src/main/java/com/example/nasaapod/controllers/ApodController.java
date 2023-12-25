@@ -1,12 +1,13 @@
-package com.example.nasaapod;
+package com.example.nasaapod.controllers;
 
+import com.example.nasaapod.dto.ApodData;
+import com.example.nasaapod.services.ApodService;
 import lombok.RequiredArgsConstructor;
 import org.apache.coyote.BadRequestException;
 import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
 
@@ -14,6 +15,14 @@ import java.time.LocalDate;
 @RestController
 public class ApodController {
     private final ApodService apodService;
+
+    @ResponseStatus(
+            value = HttpStatus.BAD_REQUEST,
+            reason = "Bad date formatting or date doesn't make sense"
+    )
+    @ExceptionHandler(BadRequestException.class)
+    public void badRequestExceptionHandler(){
+    }
 
     @GetMapping("/apod")
     public ResponseEntity<ApodData> findByDate(

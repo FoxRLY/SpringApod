@@ -1,6 +1,7 @@
-package com.example.nasaapod;
+package com.example.nasaapod.services;
 
-import jakarta.transaction.Transactional;
+import com.example.nasaapod.repositories.ApodRepository;
+import com.example.nasaapod.dto.ApodData;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -12,8 +13,6 @@ import java.util.Optional;
 public class ApodService {
     private final NasaImageDownloader imageDownloader;
     private final ApodRepository apodRepository;
-
-    @Transactional
     public Optional<ApodData> getApodByDate(LocalDate date) {
         Optional<ApodData> dbResult = apodRepository.findByDate(date);
         if (dbResult.isPresent()) {
